@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="?backgroundColor"
     >
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -16,13 +16,13 @@
       android:clickable="true"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:srcCompat="@android:drawable/btn_plus"
+      app:srcCompat="@drawable/ic_baseline_note_add_24"
       />
   <Button
       android:id="@+id/showNoteDetailsButton"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:text="Show Note Details"
+      android:text="@string/show_details_button_label"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"

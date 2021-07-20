@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/holo_blue_bright"
+    android:background="?backgroundColor"
     tools:context=".CreateNoteFragment"
     >
 
@@ -12,9 +12,9 @@
       android:id="@+id/titleInputContainer"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="24dp"
-      android:layout_marginEnd="24dp"
-      android:layout_marginTop="24dp"
+      android:layout_marginStart="@dimen/spacing_2x"
+      android:layout_marginEnd="@dimen/spacing_2x"
+      android:layout_marginTop="@dimen/spacing_2x"
       style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
