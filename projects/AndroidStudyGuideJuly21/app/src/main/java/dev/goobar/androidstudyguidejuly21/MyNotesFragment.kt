@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MyNotesFragment : Fragment() {
@@ -20,18 +21,12 @@ class MyNotesFragment : Fragment() {
 
     val floatingActionBtton: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
     floatingActionBtton.setOnClickListener {
-      requireActivity().supportFragmentManager.beginTransaction()
-        .replace(R.id.fragmentContainer, CreateNoteFragment(), "CreateNote")
-        .addToBackStack("CreateNote")
-        .commit()
+      findNavController().navigate(R.id.action_myNotesFragment_to_createNoteFragment)
     }
 
     val detailButton: Button = view.findViewById(R.id.showNoteDetailsButton)
     detailButton.setOnClickListener {
-      requireActivity().supportFragmentManager.beginTransaction()
-        .replace(R.id.fragmentContainer, NoteDetailFragment(), "NoteDetail")
-        .addToBackStack("NoteDetail")
-        .commit()
+      findNavController().navigate(R.id.action_myNotesFragment_to_noteDetailFragment)
     }
 
     return view
