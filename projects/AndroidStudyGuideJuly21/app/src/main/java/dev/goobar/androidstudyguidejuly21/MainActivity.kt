@@ -8,6 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
@@ -28,12 +29,19 @@ class MainActivity : AppCompatActivity() {
           true
         }
         R.id.guide -> {
-          supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, StudyGuideFragment()).commit()
+          supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, StudyGuideFragment(), "foo")
+            .commit()
           true
         }
         else -> false
       }
     }
-    bottomNav.selectedItemId = R.id.myNotes
+
+    // check if fresh start or not
+    if (savedInstanceState == null) {
+      bottomNav.selectedItemId = R.id.myNotes
+    }
+
   }
 }
