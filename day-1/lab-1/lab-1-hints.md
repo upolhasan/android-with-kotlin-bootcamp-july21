@@ -35,6 +35,12 @@ setx -m JAVA_HOME "C:\Progra~1\Java\<JDK Version>"
 ## 💡 Exporting ANDROID_HOME
 Setting `ANDROID_HOME` will be very similar to setting `JAVA_HOME`
 
+```
+export ANDROID_HOME=/Users/<your user>/Library/Android/sdk
+export PATH=$ANDROID_HOME/platform-tools:$PATH
+export PATH=$ANDROID_HOME/tools:$PATH
+```
+
 On Mac, the path to the SDK likely looks something like `/Users/<your user>/Library/Android/sdk`
 
 ## 💡 Invoking the Gradle Wrapper
