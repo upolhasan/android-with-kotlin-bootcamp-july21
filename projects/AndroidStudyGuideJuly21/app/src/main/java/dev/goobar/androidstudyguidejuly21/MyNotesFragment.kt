@@ -7,7 +7,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dev.goobar.androidstudyguidejuly21.data.Note
+import dev.goobar.androidstudyguidejuly21.data.SAMPLE_NOTES
+import dev.goobar.androidstudyguidejuly21.mynotes.MyNotesListAdapter
 
 class MyNotesFragment : Fragment() {
 
@@ -24,9 +29,14 @@ class MyNotesFragment : Fragment() {
       findNavController().navigate(R.id.action_myNotesFragment_to_createNoteFragment)
     }
 
-    val detailButton: Button = view.findViewById(R.id.showNoteDetailsButton)
-    detailButton.setOnClickListener {
-      findNavController().navigate(R.id.action_myNotesFragment_to_noteDetailFragment)
+    val notesList: RecyclerView = view.findViewById(R.id.notesList)
+    notesList.layoutManager = LinearLayoutManager(requireContext())
+    notesList.adapter = MyNotesListAdapter(SAMPLE_NOTES) { note ->
+      findNavController()
+        .navigate(
+          R.id.action_myNotesFragment_to_noteDetailFragment,
+          NoteDetailFragment.buildBundle(note)
+        )
     }
 
     return view

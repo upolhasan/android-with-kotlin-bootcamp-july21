@@ -7,6 +7,18 @@
     android:background="?backgroundColor"
     >
 
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/notesList"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      tools:listitem="@layout/item_note"
+      />
+
   <com.google.android.material.floatingactionbutton.FloatingActionButton
       android:id="@+id/floatingActionButton"
       android:layout_width="wrap_content"
@@ -17,17 +29,6 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:srcCompat="@drawable/ic_baseline_note_add_24"
-      />
-  <Button
-      android:id="@+id/showNoteDetailsButton"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/show_details_button_label"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      app:layout_constraintVertical_bias="0.26"
       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
