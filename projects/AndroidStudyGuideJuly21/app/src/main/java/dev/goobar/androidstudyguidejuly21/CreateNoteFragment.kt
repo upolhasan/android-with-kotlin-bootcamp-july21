@@ -9,24 +9,32 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.internal.TextWatcherAdapter
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import dev.goobar.androidstudyguidejuly21.datastore.defaultCategoryDataStore
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 
 private val REQUEST_CHOOSE_IMAGE = 0
+private val CATEGORIES = listOf("Tooling", "Kotlin", "UI", "Navigation", "Misc")
 
 class CreateNoteFragment : Fragment() {
 
   private lateinit var titleEditText: EditText
   private lateinit var contentEditExt: EditText
   private lateinit var noteImageView: ImageView
+  private lateinit var categorySpinner: Spinner
 
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
@@ -89,14 +97,35 @@ class CreateNoteFragment : Fragment() {
       }
     }
 
-    val categorySpinner: Spinner = view.findViewById(R.id.categorySpinner)
-    categorySpinner.adapter = CategorySpinnerAdapter(requireContext())
+    categorySpinner = view.findViewById(R.id.categorySpinner)
+    categorySpinner.adapter = CategorySpinnerAdapter(requireContext(), CATEGORIES)
+    categorySpinner.onItemSelectedListener = object : OnItemSelectedListener {
+      override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        lifecycleScope.launch {
+          requireContext().defaultCategoryDataStore.updateData { defaultCategory ->
+            defaultCategory.toBuilder().setCategory(CATEGORIES[position]).build()
+          }
+        }
+      }
+
+      override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+    }
 
     noteImageView.setOnClickListener {
       selectImage()
     }
 
     return view
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    lifecycleScope.launchWhenCreated {
+      requireContext().defaultCategoryDataStore.data.collect { defaultCategory ->
+        categorySpinner.setSelection(CATEGORIES.indexOf(defaultCategory.category))
+      }
+    }
   }
 
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -122,8 +151,8 @@ class CreateNoteFragment : Fragment() {
   }
 }
 
-class CategorySpinnerAdapter(context: Context) : ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item) {
+class CategorySpinnerAdapter(context: Context, items: List<String>) : ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item) {
   init {
-    addAll("Tooling", "Kotlin", "UI", "Navigation", "Misc")
+    addAll(items)
   }
 }
