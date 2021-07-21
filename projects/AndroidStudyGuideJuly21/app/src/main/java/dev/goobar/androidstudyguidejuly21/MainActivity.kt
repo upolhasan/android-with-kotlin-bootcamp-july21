@@ -21,8 +21,10 @@ class MainActivity : AppCompatActivity() {
     val toolbar: Toolbar = findViewById(R.id.toolbar)
     toolbar.inflateMenu(R.menu.main_toolbar)
     toolbar.setOnMenuItemClickListener { menuItem ->
-      val startTwitterIntent = Intent(this, TwitterActivity::class.java)
-      startActivity(startTwitterIntent)
+      when (menuItem.itemId) {
+        R.id.menuShowTwitter -> openTwitterActivity()
+        R.id.menuShare -> sendShareIntent()
+      }
       true
     }
 
@@ -48,5 +50,18 @@ class MainActivity : AppCompatActivity() {
   override fun onBackPressed() {
     if(findNavController(R.id.fragmentContainer).popBackStack()) return
     super.onBackPressed()
+  }
+
+  private fun openTwitterActivity() {
+    startActivity(Intent(this, TwitterActivity::class.java))
+  }
+
+  private fun sendShareIntent() {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+      type = "text/plain"
+      putExtra(Intent.EXTRA_SUBJECT, "Android Bootcamp w/ Kotlin")
+      putExtra(Intent.EXTRA_TEXT, "I'm learning a lot about Android today!!!")
+    }
+    startActivity(intent)
   }
 }
