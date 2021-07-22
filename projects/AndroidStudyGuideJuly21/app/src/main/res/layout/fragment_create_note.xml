@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/holo_blue_bright"
+    android:background="?backgroundColor"
     tools:context=".CreateNoteFragment"
     >
 
@@ -12,14 +12,14 @@
       android:id="@+id/titleInputContainer"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginStart="24dp"
-      android:layout_marginEnd="24dp"
-      android:layout_marginTop="24dp"
-      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginEnd="16dp"
+      android:layout_marginStart="@dimen/spacing_2x"
+      android:layout_marginTop="@dimen/spacing_2x"
+      app:layout_constraintEnd_toStartOf="@+id/imageView"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
-    >
+      style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+      >
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/titleEditText"
         android:layout_width="match_parent"
@@ -30,16 +30,16 @@
   </com.google.android.material.textfield.TextInputLayout>
 
   <Spinner
-    android:id="@+id/categorySpinner"
+      android:id="@+id/categorySpinner"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="24dp"
+      android:layout_marginEnd="16dp"
       android:layout_marginStart="24dp"
       android:layout_marginTop="16dp"
-      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/imageView"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/titleInputContainer"
-    />
+      />
 
   <com.google.android.material.textfield.TextInputLayout
       android:id="@+id/noteInputContainer"
@@ -63,5 +63,27 @@
         android:hint="Enter your note"
         />
   </com.google.android.material.textfield.TextInputLayout>
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/saveButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/spacing_2x"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:src="@drawable/ic_baseline_save_24"
+      android:visibility="gone"
+    />
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_marginEnd="24dp"
+      android:layout_marginTop="24dp"
+      android:scaleType="centerCrop"
+      android:src="@android:drawable/ic_menu_gallery"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

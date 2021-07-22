@@ -2,4 +2,6 @@
   <string name="app_name">Android Study Guide July 21</string>
   <!-- TODO: Remove or change this placeholder text -->
   <string name="hello_blank_fragment">Hello blank fragment</string>
+
+  <string name="show_details_button_label">Show Note Details</string>
 </resources>
