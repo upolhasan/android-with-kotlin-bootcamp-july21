@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dev.goobar.androidstudyguidejuly21.R
 import dev.goobar.androidstudyguidejuly21.data.Note
@@ -27,10 +29,17 @@ class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   }
 }
 
-class MyNotesListAdapter(
-  private val notes: List<Note>,
-  private val noteClickHandler: (Note) -> Unit
-  ) : RecyclerView.Adapter<NoteViewHolder>() {
+object NoteDiffUtil : DiffUtil.ItemCallback<Note>() {
+  override fun areItemsTheSame(oldItem: Note, newItem: Note): Boolean {
+    return oldItem.id == newItem.id
+  }
+
+  override fun areContentsTheSame(oldItem: Note, newItem: Note): Boolean {
+    return oldItem == newItem
+  }
+}
+
+class MyNotesListAdapter(private val noteClickHandler: (Note) -> Unit) : ListAdapter<Note, NoteViewHolder>(NoteDiffUtil) {
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
     val noteView = LayoutInflater.from(parent.context).inflate(R.layout.item_note, parent, false)
@@ -38,12 +47,8 @@ class MyNotesListAdapter(
   }
 
   override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-    val note = notes[position]
+    val note = getItem(position)
     holder.bindNode(note)
     holder.itemView.setOnClickListener { noteClickHandler(note) }
-  }
-
-  override fun getItemCount(): Int {
-    return notes.size
   }
 }
