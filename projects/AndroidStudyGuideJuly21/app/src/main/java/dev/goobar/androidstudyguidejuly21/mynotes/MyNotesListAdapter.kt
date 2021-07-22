@@ -1,5 +1,6 @@
 package dev.goobar.androidstudyguidejuly21.mynotes
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,9 @@ class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     title.text = note.title
     category.text = note.category
     content.text = note.content
+    if (note.imageUri != null) {
+      image.setImageURI(Uri.parse(note.imageUri))
+    }
   }
 }
 

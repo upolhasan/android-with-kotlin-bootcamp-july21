@@ -3,6 +3,9 @@ package dev.goobar.androidstudyguidejuly21.data
 import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 val SAMPLE_NOTES = listOf(
@@ -27,10 +30,14 @@ Features such as non-null types, extension functions, data classes, and higher-o
   Note("Sample Note 13", "General", "Some sample content"),
 )
 
-@Parcelize
+@Entity
 data class Note(
-  val title: String,
-  val category: String,
-  val content: String,
-  val imageUri: Uri? = null
-) : Parcelable
+  @ColumnInfo(name = "title") val title: String,
+  @ColumnInfo(name = "category") val category: String,
+  @ColumnInfo(name = "content") val content: String,
+  @ColumnInfo(name = "image_uri") val imageUri: String? = null
+) {
+
+  @PrimaryKey(autoGenerate = true)
+  var id: Int = 0
+}

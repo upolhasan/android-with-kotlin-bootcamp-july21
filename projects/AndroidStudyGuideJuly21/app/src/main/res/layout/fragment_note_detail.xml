@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?backgroundColor"
@@ -8,7 +9,6 @@
 
   <TextView
       android:id="@+id/noteTitleTextView"
-
       style="@style/Title.DetailsScreenText"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
@@ -25,6 +25,19 @@
       android:text="Tooling"
       />
 
+  <ImageView
+      android:id="@+id/noteImageView"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:layout_marginBottom="32dp"
+      android:layout_marginEnd="32dp"
+      android:layout_marginStart="32dp"
+      android:layout_marginTop="32dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/noteContentTextView"
+      />
   <TextView
       android:id="@+id/noteContentTextView"
       style="@style/DetailsScreenText"
@@ -32,6 +45,32 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/noteCategoryTextView"
       android:text="Android is a complex subject.  It can take a lot of work to learn"
+      />
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/editButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:layout_marginEnd="16dp"
+      android:clickable="true"
+      android:src="@drawable/ic_baseline_edit_24"
+      app:fabSize="normal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      />
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/deleteButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:clickable="true"
+      android:src="@drawable/ic_baseline_delete_24"
+      app:backgroundTint="?attr/colorError"
+      app:fabSize="mini"
+      app:layout_constraintBottom_toTopOf="@id/editButton"
+      app:layout_constraintEnd_toEndOf="@+id/editButton"
+      app:layout_constraintStart_toStartOf="@+id/editButton"
       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

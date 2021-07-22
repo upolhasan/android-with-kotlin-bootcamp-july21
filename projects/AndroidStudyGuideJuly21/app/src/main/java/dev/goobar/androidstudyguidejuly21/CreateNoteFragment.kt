@@ -3,6 +3,7 @@ package dev.goobar.androidstudyguidejuly21
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.Fragment
@@ -15,12 +16,15 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
+import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.internal.TextWatcherAdapter
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
+import dev.goobar.androidstudyguidejuly21.data.Note
 import dev.goobar.androidstudyguidejuly21.datastore.defaultCategoryDataStore
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -35,6 +39,14 @@ class CreateNoteFragment : Fragment() {
   private lateinit var contentEditExt: EditText
   private lateinit var noteImageView: ImageView
   private lateinit var categorySpinner: Spinner
+
+  private var noteId: Int? = null
+  private var uriToImage: String? = null
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    noteId = CreateNoteFragment.parseBundle(arguments)
+  }
 
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
@@ -78,11 +90,15 @@ class CreateNoteFragment : Fragment() {
 
     saveButton.setOnClickListener {
       if (areInputsValid()) {
+        if(isEdit()) updateNote() else saveNote()
+
         val snackbar = Snackbar.make(requireView(), "Saved the note!", Snackbar.LENGTH_SHORT)
         snackbar.addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
           override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
             super.onDismissed(transientBottomBar, event)
-            requireActivity().supportFragmentManager.popBackStack()
+            if (lifecycle.currentState.isAtLeast(State.STARTED)) {
+              findNavController().popBackStack()
+            }
           }
         })
         snackbar.show()
@@ -121,9 +137,26 @@ class CreateNoteFragment : Fragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    lifecycleScope.launchWhenCreated {
-      requireContext().defaultCategoryDataStore.data.collect { defaultCategory ->
-        categorySpinner.setSelection(CATEGORIES.indexOf(defaultCategory.category))
+
+    val id = noteId
+
+    if (id == null) {
+      lifecycleScope.launchWhenCreated {
+        requireContext().defaultCategoryDataStore.data.collect { defaultCategory ->
+          categorySpinner.setSelection(CATEGORIES.indexOf(defaultCategory.category))
+        }
+      }
+    } else {
+      lifecycleScope.launch {
+        val note = requireActivity().studyGuideApplication().database.noteDao().get(id)
+
+        titleEditText.setText(note.title)
+        categorySpinner.setSelection(CATEGORIES.indexOf(note.category))
+        contentEditExt.setText(note.content)
+        note.imageUri?.let { uri ->
+          uriToImage = uri
+          noteImageView.setImageURI(Uri.parse(uri))
+        }
       }
     }
   }
@@ -133,8 +166,43 @@ class CreateNoteFragment : Fragment() {
     if(requestCode != REQUEST_CHOOSE_IMAGE || resultCode == Activity.RESULT_CANCELED) return
 
     if (resultCode == Activity.RESULT_OK && data != null) {
-      val uriToImage = data.data
-      noteImageView.setImageURI(uriToImage)
+      val contentResolver = requireContext().contentResolver
+      val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION
+      contentResolver.takePersistableUriPermission(data.data!!, takeFlags)
+
+      uriToImage = data.data.toString()
+      noteImageView.setImageURI(data.data)
+    }
+  }
+
+  private fun isEdit() = noteId != null
+
+  private fun updateNote() {
+    val newNoteId = noteId ?: return
+
+    val title = titleEditText.text.toString()
+    val category = CATEGORIES[categorySpinner.selectedItemPosition]
+    val content = contentEditExt.text.toString()
+    val image = uriToImage
+
+    val newNote = Note(title, category, content, image).apply {
+      id = newNoteId
+    }
+
+    lifecycleScope.launch {
+      requireActivity().studyGuideApplication().database.noteDao().update(newNote)
+    }
+  }
+
+  private fun saveNote() {
+    val title = titleEditText.text.toString()
+    val category = CATEGORIES[categorySpinner.selectedItemPosition]
+    val content = contentEditExt.text.toString()
+    val image = uriToImage
+
+    lifecycleScope.launch {
+      val database = requireActivity().studyGuideApplication().database
+      database.noteDao().save(Note(title, category, content, image))
     }
   }
 
@@ -145,9 +213,22 @@ class CreateNoteFragment : Fragment() {
   private fun selectImage() {
     val intent = Intent().apply {
       type = "image/*"
-      action = Intent.ACTION_GET_CONTENT
+      action = Intent.ACTION_OPEN_DOCUMENT
     }
     startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CHOOSE_IMAGE)
+  }
+
+  companion object {
+    private const val EXTRA_NOTE_ID = "key_note_id"
+
+    fun buildEditBundle(note: Note) = Bundle().apply {
+      putInt(EXTRA_NOTE_ID, note.id)
+    }
+
+    private fun parseBundle(bundle: Bundle?): Int? {
+      val id = bundle?.getInt(EXTRA_NOTE_ID, -1)
+      return if(id == -1) null else id
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dev.goobar.androidstudyguidejuly21.data.Note
 import dev.goobar.androidstudyguidejuly21.data.SAMPLE_NOTES
 import dev.goobar.androidstudyguidejuly21.mynotes.MyNotesListAdapter
+import kotlinx.coroutines.flow.collect
 
 class MyNotesFragment : Fragment() {
 
@@ -31,12 +33,24 @@ class MyNotesFragment : Fragment() {
 
     val notesList: RecyclerView = view.findViewById(R.id.notesList)
     notesList.layoutManager = LinearLayoutManager(requireContext())
-    notesList.adapter = MyNotesListAdapter(SAMPLE_NOTES) { note ->
-      findNavController()
-        .navigate(
-          R.id.action_myNotesFragment_to_noteDetailFragment,
-          NoteDetailFragment.buildBundle(note)
-        )
+
+
+    lifecycleScope.launchWhenCreated {
+
+      requireActivity().studyGuideApplication().database
+        .noteDao()
+        .getAll()
+        .collect { notes ->
+          val adapter = MyNotesListAdapter(notes) { note ->
+            findNavController()
+              .navigate(
+                R.id.action_myNotesFragment_to_noteDetailFragment,
+                NoteDetailFragment.buildBundle(note)
+              )
+          }
+          notesList.adapter = adapter
+        }
+
     }
 
     return view
