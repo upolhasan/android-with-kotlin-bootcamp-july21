@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dev.goobar.androidstudyguidejuly21.data.Note
+import dev.goobar.androidstudyguidejuly21.upload.NoteUploadService
 import kotlinx.coroutines.launch
 
 class NoteDetailFragment : Fragment() {
@@ -37,6 +38,7 @@ class NoteDetailFragment : Fragment() {
     val noteImage: ImageView = view.findViewById(R.id.noteImageView)
     val editButton: FloatingActionButton = view.findViewById(R.id.editButton)
     val deleteButton: FloatingActionButton = view.findViewById(R.id.deleteButton)
+    val uploadButton: FloatingActionButton = view.findViewById(R.id.uploadButton)
 
     editButton.setOnClickListener {
       editNote(note)
@@ -44,6 +46,10 @@ class NoteDetailFragment : Fragment() {
 
     deleteButton.setOnClickListener {
       deleteNote(note)
+    }
+
+    uploadButton.setOnClickListener {
+      uploadNote(note)
     }
 
     lifecycleScope.launchWhenCreated {
@@ -78,6 +84,10 @@ class NoteDetailFragment : Fragment() {
       Snackbar.make(requireView(), "Note deleted", Snackbar.LENGTH_SHORT).show()
       findNavController().popBackStack()
     }
+  }
+
+  private fun uploadNote(note: Note) {
+    requireContext().startService(NoteUploadService.getNoteUploadIntent(requireContext(), note))
   }
 
   companion object {
