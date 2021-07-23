@@ -26,7 +26,7 @@
 
   <fragment
       android:id="@+id/studyGuideFragment"
-      android:name="dev.goobar.androidstudyguidejuly21.StudyGuideFragment"
+      android:name="dev.goobar.androidstudyguidejuly21.studyguide.StudyGuideFragment"
       android:label="Study Guide">
     <argument
         android:name="ShowUIChrome"

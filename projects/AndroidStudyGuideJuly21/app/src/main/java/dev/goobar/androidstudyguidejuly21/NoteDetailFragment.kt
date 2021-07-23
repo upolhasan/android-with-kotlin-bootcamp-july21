@@ -11,10 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import dev.goobar.androidstudyguidejuly21.data.Note
+import dev.goobar.androidstudyguidejuly21.upload.NoteUploadService
+import dev.goobar.androidstudyguidejuly21.upload.NoteUploadWorker
 import kotlinx.coroutines.launch
 
 class NoteDetailFragment : Fragment() {
@@ -37,6 +42,7 @@ class NoteDetailFragment : Fragment() {
     val noteImage: ImageView = view.findViewById(R.id.noteImageView)
     val editButton: FloatingActionButton = view.findViewById(R.id.editButton)
     val deleteButton: FloatingActionButton = view.findViewById(R.id.deleteButton)
+    val uploadButton: FloatingActionButton = view.findViewById(R.id.uploadButton)
 
     editButton.setOnClickListener {
       editNote(note)
@@ -44,6 +50,10 @@ class NoteDetailFragment : Fragment() {
 
     deleteButton.setOnClickListener {
       deleteNote(note)
+    }
+
+    uploadButton.setOnClickListener {
+      uploadNote(note)
     }
 
     lifecycleScope.launchWhenCreated {
@@ -78,6 +88,16 @@ class NoteDetailFragment : Fragment() {
       Snackbar.make(requireView(), "Note deleted", Snackbar.LENGTH_SHORT).show()
       findNavController().popBackStack()
     }
+  }
+
+  private fun uploadNote(note: Note) {
+    //requireContext().startService(NoteUploadService.getNoteUploadIntent(requireContext(), note))
+
+    val uploadWorkRequest: WorkRequest =
+      OneTimeWorkRequestBuilder<NoteUploadWorker>()
+        .setInputData(NoteUploadWorker.buildInputData(note))
+        .build()
+    WorkManager.getInstance(requireContext()).enqueue(uploadWorkRequest)
   }
 
   companion object {

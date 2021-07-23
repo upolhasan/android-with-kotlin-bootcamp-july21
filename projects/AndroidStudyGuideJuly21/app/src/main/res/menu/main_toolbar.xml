@@ -16,4 +16,9 @@
     app:showAsAction="ifRoom"
     />
 
+  <item
+      android:id="@+id/location"
+      android:title="Get Location"
+      app:showAsAction="never"
+      />
 </menu>

@@ -73,4 +73,18 @@
       app:layout_constraintStart_toStartOf="@+id/editButton"
       />
 
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/uploadButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="16dp"
+      android:clickable="true"
+      android:src="@drawable/ic_baseline_cloud_upload_24"
+      app:backgroundTint="?attr/colorSecondary"
+      app:fabSize="mini"
+      app:layout_constraintBottom_toTopOf="@id/deleteButton"
+      app:layout_constraintEnd_toEndOf="@+id/deleteButton"
+      app:layout_constraintStart_toStartOf="@+id/deleteButton"
+      />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
