@@ -6,6 +6,13 @@ plugins {
   id "org.jetbrains.kotlin.kapt"
 }
 
+// https://developer.android.com/studio/publish/app-signing#secure-shared-keystore
+//
+// Load your keystore.properties file into the keystoreProperties object.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
   compileSdkVersion 30
   buildToolsVersion "30.0.3"
@@ -29,6 +36,39 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
+
+  signingConfigs {
+    release {
+      // these values will be pulled from your local.properties file
+      storeFile storeFilePath
+      storePassword storePassword
+      keyAlias keyAlias
+      keyPassword keyPassword
+    }
+  }
+
+  // Add an app variant flavor for different backend endpoints
+  // Can then configure BuildConfig properties to point to unique endpoints based
+  // on the environment
+  flavorDimensions "env"
+  productFlavors {
+    dev {
+      dimension "env"
+      applicationIdSuffix ".dev"
+      versionNameSuffix "-dev"
+
+      buildConfigField "String", "ENDPOINT_URL", "\"www.dev.foo\""
+    }
+
+    prod {
+      dimension "env"
+      applicationIdSuffix ".prod"
+      versionNameSuffix "-prod"
+
+      buildConfigField "String", "ENDPOINT_URL", "\"www.prod.foo\""
+    }
+  }
+
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
     targetCompatibility JavaVersion.VERSION_1_8
